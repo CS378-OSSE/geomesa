@@ -33,7 +33,7 @@ import scala.collection.JavaConversions._
 @RunWith(classOf[JUnitRunner])
 class ScalaSimpleFeatureTest extends Specification {
 
-  "KryoSimpleFeature" should {
+  "ScalaSimpleFeature" should {
     "properly convert attributes that are set as strings" in {
       val sft = SimpleFeatureTypes.createType("testType", "a:Integer,b:Date,*geom:Point:srid=4326")
 
