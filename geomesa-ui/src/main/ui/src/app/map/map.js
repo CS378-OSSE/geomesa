@@ -46,9 +46,14 @@ angular.module('geomesa.map', [])
 
                 scope.api = {
                     applyCQL: function (cql) {
-                        var params = {CQL_FILTER: cql};
-                        wmsSource.updateParams(params);
-                        console.log("cql applied: " + cql);
+                        if (cql){
+                            var params = {CQL_FILTER: cql};
+                            wmsSource.updateParams(params);
+                        }
+                        else{
+                            delete wmsSource.getParams().CQL_FILTER;
+                            wmsSource.updateParams({});
+                        }
                     }
                 };
 

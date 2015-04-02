@@ -19,7 +19,7 @@ angular.module('geomesa.card', [])
                 }
 
                 scope.$watch('selectedPoint', function (p) {
-                    if (p.lat && p.lng) {
+                    if (p && p.lat && p.lng) {
                         params = {
                             REQUEST: "GetFeatureInfo",
                             EXCEPTIONS: "application/vnd.ogc.se_xml",
