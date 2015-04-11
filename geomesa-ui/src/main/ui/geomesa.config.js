@@ -35,15 +35,17 @@ module.exports = {
     // for them to 'indexDest' file specified above.
     vendorFiles: {
         js: [
-            'vendor/bower/d3/d3.js',
-            'vendor/bower/lodash/dist/lodash.js',
-            'vendor/bower/jquery/dist/jquery.js',
             'vendor/bower/angular/angular.js',
             'vendor/bower/angular-route/angular-route.js',
             'vendor/bower/angular-resource/angular-resource.js',
+            'vendor/bower/d3/d3.js',
+            'vendor/bower/jquery/dist/jquery.js',
+            'vendor/bower/jsonix/dist/Jsonix-all.js',
+            'vendor/bower/lodash/dist/lodash.js',
             'vendor/bower/moment/moment.js',
             'vendor/bower/moment-timezone/builds/moment-timezone-with-data-2010-2020.min.js',
             'vendor/bower/openlayers/build/ol.js',
+            'vendor/bower/wpsclient/index.js',
             // TODO - test only
             'vendor/bower/angular-mocks/angular-mocks.js',
         ],
