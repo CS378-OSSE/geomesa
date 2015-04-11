@@ -9,12 +9,11 @@
     "bootstrap": "~3.1.1",
     "d3": "~3.4.2",
     "font-awesome": "~4.0.3",
-    "jsonix": "highsource/jsonix#55c0667f6f6ce19d45e548c39f9923e14015f310",
     "jquery": "~2.1.0",
     "lodash": "~2.4.1",
     "moment": "~2.7.0",
     "moment-timezone": "~0.1.0",
     "openlayers": "https://github.com/openlayers/ol3/releases/download/v3.2.1/v3.2.1.zip",
-    "wpsclient": "https://raw.githubusercontent.com/boundlessgeo/wps-gui/master/src/wpsclient.js"
+    "wps-client-temp" : "latest"
   }
 }

@@ -40,12 +40,10 @@ module.exports = {
             'vendor/bower/angular-resource/angular-resource.js',
             'vendor/bower/d3/d3.js',
             'vendor/bower/jquery/dist/jquery.js',
-            'vendor/bower/jsonix/dist/Jsonix-all.js',
-            'vendor/bower/lodash/dist/lodash.js',
             'vendor/bower/moment/moment.js',
             'vendor/bower/moment-timezone/builds/moment-timezone-with-data-2010-2020.min.js',
             'vendor/bower/openlayers/build/ol.js',
-            'vendor/bower/wpsclient/index.js',
+            'vendor/bower/wps-client-temp/dist/wps-gui-client.js',
             // TODO - test only
             'vendor/bower/angular-mocks/angular-mocks.js',
         ],
