@@ -8,19 +8,25 @@ angular.module('geomesa.wps', [])
             }
         });
         var unique = client.getProcess('geomesa', 'geomesa:Unique');
-        unique.execute({
-            inputs: {
-                attribute: "When",
-                filter: "why",
-                histogram: 1,
-                sort: "ASC",
-                sortByCount: 0
-            },
-            success: function(outputs){
-                console.log("in success, yayayayaya");
+        unique.describe({
+            callback: function(a){
+               console.log("in callback - " + a);
+               console.log(JSON.stringify(a));
             }
         });
-        unique.execute();
+        //unique.execute({
+        //    inputs: {
+        //        attribute: "When",
+        //        filter: "why",
+        //        histogram: 1,
+        //        sort: "ASC",
+        //        sortByCount: 0
+        //    },
+        //    success: function(outputs){
+        //        console.log("in success, yayayayaya");
+        //    }
+        //});
+        //unique.execute();
         
         console.log("leaving wps controller");
     }]);
