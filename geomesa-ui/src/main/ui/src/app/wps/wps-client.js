@@ -1,95 +1,104 @@
 angular.module('geomesa.wps', [])
 
     .controller('WpsController', ['$scope', function($scope) {
-        console.log("in wps controller");
-        var client = new OpenLayers.WPSClient({
-            servers: {
-                geomesa: 'http://geomesa:8080/geoserver/wps'
+        var request = createWPSExecuteRequest('Who', 'true', 'ASC', 'true');
+
+        OpenLayers.Request.POST({
+            url: 'http://geomesa:8080/geoserver/wps',
+            data: request,
+            success: function(outputs){
+                console.log(outputs.responseText);
             }
-        });
-        var unique = client.getProcess('geomesa', 'geomesa:Unique');
-        unique.describe({
-            callback: function(a){
-               console.log("in callback - " + a);
-               console.log(JSON.stringify(a));
-            }
-        });
-        //unique.execute({
-        //    inputs: {
-        //        attribute: "When",
-        //        filter: "why",
-        //        histogram: 1,
-        //        sort: "ASC",
-        //        sortByCount: 0
-        //    },
-        //    success: function(outputs){
-        //        console.log("in success, yayayayaya");
-        //    }
-        //});
-        //unique.execute();
-        
-        console.log("leaving wps controller");
+        });   
     }]);
 
-//
-//angular.module('geomesa.wps', [])
-//
-//    .controller('geomesaWps', ['$scope', function ($scope) {
-//        client = new wps.client({
-//            servers: {
-//                geomesa: 'http://geomesa:8080/geoserver/wps'
-//            }
-//        });
-//
-//
-//
-//           //     var projection = ol.proj.get('EPSG:3857'),
-//           //         extent = projection.getExtent(),
-//           //         baseLayer = new ol.layer.Tile({
-//           //             extent: extent,
-//           //             source: new ol.source.MapQuest({layer: 'osm'})
-//           //         }),
-//           //         wmsSource = new ol.source.TileWMS({
-//           //             url: 'http://geomesa:8080/geoserver/wps',
-//           //             params: {LAYERS: 'QuickStart'}
-//           //         }),
-//           //             wmsLayer = new ol.layer.Tile({
-//           //             extent: extent,
-//           //             source: wmsSource
-//           //         }),
-//           //         olView = new ol.View({
-//           //             // center: ol.proj.transform([37.41, 8.82], 'EPSG:4326', 'EPSG:3857'),
-//           //             center:[-8554902.86746,-4592147.60759],
-//           //             zoom : 4,
-//           //             maxResolution : 40075016.68557849 / screen.width,
-//           //         });
-//
-//           //     scope.map = new ol.Map({
-//           //         target: element[0],
-//           //         layers: [baseLayer, wmsLayer],
-//           //         view: olView
-//           //     });
-//
-//           //     scope.api = {
-//           //         applyCQL: function (cql) {
-//           //             console.log(cql);
-//           //         }
-//           //     };
-//
-//           //     scope.map.on('singleclick', function(evt) {
-//           //         var viewResolution = olView.getResolution(),
-//           //             url = wmsSource.getGetFeatureInfoUrl(
-//           //                 evt.coordinate, viewResolution, 'EPSG:3857',
-//           //                 {'INFO_FORMAT': 'application/json', FEATURE_COUNT: 50}
-//           //         );
-//           //         $http.get(url).success(function(data, status, headers, config) {
-//           //             if (data.features.length){
-//           //                 scope.selectedFeatures = data.features;
-//           //             }
-//           //         }).error(function(data, status, headers, config) {
-//           //             console.log('Error getting data with getFeatureInfo.');
-//           //         });
-//           //     }); 
-//            }
-//        };
-//    }]);
+function createWPSExecuteRequest(attribute, histogram, sort, sortByCount) {
+    var request = OpenLayers.Format.XML.prototype.write
+                (new OpenLayers.Format.WPSExecute().writeNode('wps:Execute', {   
+
+        identifier: 'geomesa:Unique',
+        dataInputs: [{
+            identifier: 'features',
+            reference: {
+                mimeType: 'text/xml',
+                href: "http://geoserver/wfs",
+                method: 'POST',
+                body: {
+                    wfs: {
+                        service: "WFS",
+                        version: "1.0.0",
+                        outputFormat: "GML2",
+                        featurePrefix: "geomesa",
+                        featureType: "QuickStart",
+                        featureNS: "http://geomesa.org/"
+                    }
+                }
+            }},
+            { identifier: 'attribute',
+            data: {
+                literalData: {
+                    value: attribute
+                } 
+            }},
+            {identifier: 'histogram',
+            data: {
+                literalData: {
+                    value: histogram
+                }
+            }},
+            {identifier: 'sort',
+            data: {
+                literalData: {
+                    value: sort
+                }
+            }},
+            {identifier: 'sortByCount',
+            data: {
+                literalData: {
+                    value: sortByCount
+                }
+            }}
+        ],
+        responseForm: {
+            rawDataOutput: {
+                mimeType: "text/xml; subtype=wfs-collection/1.0",
+                identifier: 'result'
+            }
+        }
+    }));
+
+    return formatXml(request);
+}
+
+function formatXml(xml) {
+    var formatted = '';
+    var reg = /(>)(<)(\/*)/g;
+    xml = xml.replace(reg, '$1\r\n$2$3');
+    var pad = 0;
+    jQuery.each(xml.split('\r\n'), function(index, node) {
+        var indent = 0;
+        if (node.match( /.+<\/\w[^>]*>$/ )) {
+            indent = 0;
+        } else if (node.match( /^<\/\w/ )) {
+            if (pad !== 0) {
+                pad -= 1;
+            }
+        } else if (node.match( /^<\w[^>]*[^\/]>.*$/ )) {
+            indent = 1;
+        } else {
+            indent = 0;
+        }
+ 
+        var padding = '';
+        for (var i = 0; i < pad; i++) {
+            padding += '    ';
+        }
+ 
+        formatted += padding + node + '\r\n';
+        pad += indent;
+    });
+ 
+    formatted = '<?xml version="1.0" encoding="UTF-8"?>\n' + formatted;
+    formatted = formatted.replace("xlink:", "");
+    return formatted;
+}
